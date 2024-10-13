@@ -9,10 +9,22 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import { Button } from "../components/ui/button";
 import { toast } from "sonner";
 import { chatSession } from "@/service/AIModel";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { FcGoogle } from "react-icons/fc";
+import { useGoogleLogin } from "@react-oauth/google";
+import axios from "axios";
 
 function CreateTrip() {
   const [place, setPlace] = useState();
   const [formData, setFormData] = useState([]);
+  const [openDialogue, setOpenDialogue] = useState(false);
 
   const handleInputChange = (name, value) => {
     setFormData({
@@ -20,11 +32,19 @@ function CreateTrip() {
       [name]: value,
     });
   };
-  useEffect(() => {
-    // console.log(formData);
-  }, [formData]);
+  useEffect(() => {}, [formData]);
+
+  const login = useGoogleLogin({
+    onSuccess: (codeResp) => GetUserProfile(codeResp),
+    onError: (error) => console.log(error),
+  });
 
   const onGenerateTrip = async () => {
+    const user = localStorage.getItem("user");
+    if (!user) {
+      setOpenDialogue(true);
+      return;
+    }
     if (
       formData?.noOfDays > 5 ||
       formData?.noOfDays < 1 ||
@@ -36,7 +56,6 @@ function CreateTrip() {
       toast("Please fill all the details correctly!");
       return;
     } else {
-      // console.log(formData);
       const FINAL_PROMPT = AI_PROMPT.replace(
         "{location}",
         formData?.location?.label
@@ -49,6 +68,25 @@ function CreateTrip() {
       const result = await chatSession.sendMessage(FINAL_PROMPT);
       console.log(result?.response?.text());
     }
+  };
+
+  const GetUserProfile = (tokenInfo) => {
+    axios
+      .get(
+        `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenInfo?.access_token}`,
+        {
+          headers: {
+            Authorization: `Bearer ${tokenInfo?.access_token}`,
+            Accept: "Application/json",
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        localStorage.setItem("user", JSON.stringify(res.data));
+        setOpenDialogue(false);
+        onGenerateTrip();
+      });
   };
 
   return (
@@ -136,6 +174,29 @@ function CreateTrip() {
       <div className="my-20 justify-end flex">
         <Button onClick={onGenerateTrip}>Generate Trip</Button>
       </div>
+      <Dialog open={openDialogue}>
+        {/* <DialogTitle>
+          <VisuallyHidden>Title</VisuallyHidden>
+        </DialogTitle> */}
+        <DialogContent>
+          <DialogHeader>
+            <DialogDescription>
+              <div className="flex items-center justify-center">
+                <img src="/logo.svg" alt="Logo" />
+              </div>
+              <h2 className="font-bold text-lg mt-7">Sign In with Google</h2>
+              <p>Sign in to the App with google authentication securely.</p>
+              <Button
+                onClick={login}
+                className="w-full mt-5 flex gap-4 items-center"
+              >
+                <FcGoogle className="h-6 w-6" />
+                Sign In with Google
+              </Button>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
