@@ -1,8 +1,15 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { IoIosSend } from "react-icons/io";
+import { GetPlaceDetails } from "@/service/GlobalAPI";
 
 function InfoSection({ trip }) {
+  const GetPlacePhoto = async () => {
+    const result = await GetPlaceDetails().then((resp) => {
+      console.log(resp.data);
+    });
+  };
+
   return (
     <div>
       <img
