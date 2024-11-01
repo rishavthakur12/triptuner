@@ -1,19 +1,33 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IoIosSend } from "react-icons/io";
 import { GetPlaceDetails } from "@/service/GlobalAPI";
+import { PHOTO_REF_URL } from "@/service/GlobalAPI";
 
 function InfoSection({ trip }) {
+  const [photoUrl, setPhotoUrl] = useState();
+
+  useEffect(() => {
+    trip && GetPlacePhoto();
+  }, [trip]);
   const GetPlacePhoto = async () => {
-    const result = await GetPlaceDetails().then((resp) => {
+    const data = {
+      textQuery: trip?.userSelection?.location?.label,
+    };
+    const result = await GetPlaceDetails(data).then((resp) => {
       console.log(resp.data);
+      const PhotoUrl = PHOTO_REF_URL.replace(
+        "{NAME}",
+        resp.data.places[0].photos[2].name
+      );
+      setPhotoUrl(PhotoUrl);
     });
   };
 
   return (
     <div>
       <img
-        src="/placeholder.jpg"
+        src="/placeholder.jpg" //{photoUrl}
         alt=""
         className="h-[450px] w-full object-cover rounded-xl"
       />

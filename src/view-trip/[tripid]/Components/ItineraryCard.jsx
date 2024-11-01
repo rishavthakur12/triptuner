@@ -1,7 +1,25 @@
-import React from "react";
+import { GetPlaceDetails, PHOTO_REF_URL } from "@/service/GlobalAPI";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function ItineraryCard({ place }) {
+  const [photoUrl, setPhotoUrl] = useState();
+
+  useEffect(() => {
+    place && GetPlacePhoto();
+  }, [place]);
+  const GetPlacePhoto = async () => {
+    const data = {
+      textQuery: place?.placeName,
+    };
+    const result = await GetPlaceDetails(data).then((resp) => {
+      const PhotoUrl = PHOTO_REF_URL.replace(
+        "{NAME}",
+        resp.data.places[0].photos[2].name
+      );
+      setPhotoUrl(PhotoUrl);
+    });
+  };
   return (
     <Link
       to={"https://www.google.com/maps/search/?api=1&query=" + place?.placeName}
