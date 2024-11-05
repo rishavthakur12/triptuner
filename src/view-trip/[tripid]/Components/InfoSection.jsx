@@ -14,14 +14,16 @@ function InfoSection({ trip }) {
     const data = {
       textQuery: trip?.userSelection?.location?.label,
     };
-    const result = await GetPlaceDetails(data).then((resp) => {
-      console.log(resp.data);
-      const PhotoUrl = PHOTO_REF_URL.replace(
-        "{NAME}",
-        resp.data.places[0].photos[2].name
-      );
-      setPhotoUrl(PhotoUrl);
-    });
+    // CORS issue
+
+    // const result = await GetPlaceDetails(data).then((resp) => {
+    //   console.log(resp.data);
+    //   const PhotoUrl = PHOTO_REF_URL.replace(
+    //     "{NAME}",
+    //     resp.data.places[0].photos[2].name
+    //   );
+    //   setPhotoUrl(PhotoUrl);
+    // });
   };
 
   return (
