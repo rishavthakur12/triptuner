@@ -53,7 +53,7 @@ function Header() {
 
   return (
     <div className="p-3 shadow-sm flex justify-between items-center w-full">
-      <a href="/" className="flex items-center w-full">
+      <a href="/" className="flex items-center ">
         <img src="/logo.svg" />
         <div className="font-bold text-xl text-gray-700 ">Triptuner</div>
       </a>
