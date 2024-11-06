@@ -53,6 +53,10 @@ function Header() {
       });
   };
 
+  const handleClose = () => {
+    setOpenDialogue(false);
+  };
+
   return (
     <div className="p-3 shadow-sm flex justify-between items-center w-full">
       <a href="/" className="flex items-center ">
@@ -97,7 +101,8 @@ function Header() {
           <Button onClick={() => setOpenDialogue(true)}>Sign In</Button>
         )}
       </div>
-      <Dialog open={openDialogue}>
+      <Dialog open={openDialogue} onOpenChange={setOpenDialogue}>
+        <DialogOverlay onClick={handleClose} />
         <DialogContent>
           <DialogTitle />
           <DialogHeader>
