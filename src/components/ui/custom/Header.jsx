@@ -9,9 +9,11 @@ import {
 } from "@/components/ui/popover";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogOverlay,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -96,10 +98,8 @@ function Header() {
         )}
       </div>
       <Dialog open={openDialogue}>
-        {/* <DialogTitle>
-          <VisuallyHidden>Title</VisuallyHidden>
-        </DialogTitle> */}
         <DialogContent>
+          <DialogTitle />
           <DialogHeader>
             <DialogDescription>
               <div className="flex items-center justify-center">
